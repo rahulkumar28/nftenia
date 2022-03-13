@@ -77,7 +77,7 @@ export default function Games() {
     return (
         <>
             < Head>
-                <title>Metaverse</title>
+                <title>Games</title>
             </Head>
             <h2 className="flex w-full h-screen bg-dunes bg-cover bg-center">
                 <link rel="stylesheet" href="https://cdn.materialdesignicons.com/6.5.95/css/materialdesignicons.min.css" />

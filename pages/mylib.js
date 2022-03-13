@@ -1,4 +1,4 @@
-/* pages/index.js */
+/* pages/creator-dashboard.js */
 import { ethers } from 'ethers'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
@@ -6,29 +6,32 @@ import Web3Modal from "web3modal"
 import Head from 'next/head'
 
 import {
-    nftaddress, nftmarketaddress
+    nftmarketaddress, nftaddress
 } from '../config'
 
-import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../artifacts/contracts/Market.sol/NFTMarket.json'
+import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 
-export default function Avatar() {
+export default function MyLib() {
     const [nfts, setNfts] = useState([])
+    const [sold, setSold] = useState([])
     const [loadingState, setLoadingState] = useState('not-loaded')
     useEffect(() => {
         loadNFTs()
     }, [])
     async function loadNFTs() {
-        /* create a generic provider and query for unsold market items */
-        const provider = new ethers.providers.JsonRpcProvider()
-        const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
-        const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, provider)
-        const data = await marketContract.fetchMarketItems()
+        const web3Modal = new Web3Modal({
+            network: "mainnet",
+            cacheProvider: true,
+        })
+        const connection = await web3Modal.connect()
+        const provider = new ethers.providers.Web3Provider(connection)
+        const signer = provider.getSigner()
 
-        /*
-        *  map over items returned from smart contract and format 
-        *  them as well as fetch their token metadata
-        */
+        const marketContract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
+        const tokenContract = new ethers.Contract(nftaddress, NFT.abi, provider)
+        const data = await marketContract.fetchItemsCreated()
+
         const items = await Promise.all(data.map(async i => {
             const tokenUri = await tokenContract.tokenURI(i.tokenId)
             const meta = await axios.get(tokenUri)
@@ -38,6 +41,7 @@ export default function Avatar() {
                 tokenId: i.tokenId.toNumber(),
                 seller: i.seller,
                 owner: i.owner,
+                sold: i.sold,
                 image: meta.data.image,
                 name: meta.data.name,
                 description: meta.data.description,
@@ -51,33 +55,16 @@ export default function Avatar() {
             return item
         }))
         /* create a filtered array of items that have been sold */
-        const mvItems = items.filter(i => i.type === 'av')
-
-        setNfts(mvItems)
+        //const soldItems = items.filter(i => i.sold)
+        //setSold(soldItems)
+        setNfts(items)
         setLoadingState('loaded')
     }
-    async function buyNft(nft) {
-        /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-        const web3Modal = new Web3Modal()
-        const connection = await web3Modal.connect()
-        const provider = new ethers.providers.Web3Provider(connection)
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-
-        /* user will be prompted to pay the asking proces to complete the transaction */
-        const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-        const transaction = await contract.createMarketSale(nftaddress, nft.tokenId, {
-            value: price
-        })
-        await transaction.wait()
-        loadNFTs()
-    }
-
-    if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in Metaverse</h1>)
+    if (loadingState === 'loaded' && !nfts.length) return (<h1 className="py-10 px-20 text-3xl">No assets created</h1>)
     return (
         <>
             < Head>
-                <title>Avatar</title>
+                <title>My-Lib</title>
             </Head>
             <h2 className="flex w-full h-screen bg-dunes bg-cover bg-center">
                 <link rel="stylesheet" href="https://cdn.materialdesignicons.com/6.5.95/css/materialdesignicons.min.css" />
@@ -132,37 +119,6 @@ export default function Avatar() {
                                         </div>
                                     </div>
 
-
-                                    <div class="flex flex-row flex-auto justify-end mr-1">
-
-                                        <a class="flex text-xs border px-3 my-auto py-2 mr-2
-                        border-amber-500 group hover:bg-amber-500 
-                        rounded-xss
-                        transition-all duration-200">
-
-
-                                            <i class="mdi mdi-cart-outline text-amber-700
-                            group-hover:text-white delay-100"></i>
-                                        </a>
-
-
-                                        <a class="flex text-xs border px-3 my-auto py-2 
-                        border-amber-500 group hover:bg-amber-500 
-                        rounded-xss
-                        transition-all duration-200">
-
-
-                                            <i class="mdi mdi-eye-outline text-amber-700
-                            group-hover:text-white delay-100"></i>
-
-
-                                            <div class="text-xxs text-amber-700 font-semibold ml-2
-                            group-hover:text-white delay-100" onClick={() => buyNft(nft)}>
-                                                Buy
-
-                                            </div>
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         ))

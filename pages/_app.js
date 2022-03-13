@@ -34,7 +34,12 @@ function Marketplace({ Component, pageProps }) {
           </Link>
           <Link href="/create-item">
             <a className="mr-20 text-white font-bold hover:text-yellow-500 transition duration-300">
-              Add-NFT
+              Add
+            </a>
+          </Link>
+          <Link href="/mylib">
+            <a className="mr-20 text-white font-bold hover:text-yellow-500 transition duration-300">
+              My-Lib
             </a>
           </Link>
 
