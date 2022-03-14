@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Head from 'next/head'
 
 
-
 function Marketplace({ Component, pageProps }) {
   return (
     <div className="">
@@ -16,7 +15,7 @@ function Marketplace({ Component, pageProps }) {
         <div className="flex shrink-0">
           <img src="/nftenia2.png" alt="Logo" class="object-contain align-left h-30 w-40" />
         </div>
-        <div className="hidden md:flex items-center mt-6  justify-right">
+        <div className="hidden md:flex text-2xl items-center mt-6  justify-right">
           <Link href="/">
             <a className="mr-20 text-white font-bold hover:text-yellow-500 transition duration-300">
               Metaverse

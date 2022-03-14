@@ -98,7 +98,7 @@ export default function Pricing() {
         })
         await transaction.wait()
         //loadNFTs()
-        router.push('/')
+        router.push('/zenx')
     }
 
     //if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in Metaverse</h1>)
@@ -114,13 +114,13 @@ export default function Pricing() {
                         Content.map((data, i) => (
                             <div class="rounded overflow-hidden shadow-lg">
                                 <div class="px-6 py-4 bg-slate-200">
-                                    <div class="font-bold text-8xl mb-2 hover:underline truncate">{data.title}</div>
-                                    <p class="text-gray-700 text-4xl hover:underline truncate">
+                                    <div class="font-bold text-6xl mb-2 hover:underline truncate">{data.title}</div>
+                                    <p class="text-gray-700 text-2xl hover:underline truncate">
                                         {data.desc}
                                     </p>
                                 </div>
-                                <div class="px-6 py-4 bg-slate-200">
-                                    <div class="font-bold text-8xl mb-2 hover:underline truncate">Price</div>
+                                <div class="px-6 py-4 bg-slate-200">s
+                                    <div class="font-bold text-6xl mb-2 hover:underline truncate">Price</div>
                                     <p class="text-gray-700 text-4xl hover:underline truncate">
                                         {data.pricetag}
                                     </p>
