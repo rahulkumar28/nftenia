@@ -32,16 +32,7 @@ function Marketplace({ Component, pageProps }) {
               Games
             </a>
           </Link>
-          <Link href="/create-item">
-            <a className="mr-20 text-white font-bold hover:text-yellow-500 transition duration-300">
-              Add
-            </a>
-          </Link>
-          <Link href="/mylib">
-            <a className="mr-20 text-white font-bold hover:text-yellow-500 transition duration-300">
-              My-Lib
-            </a>
-          </Link>
+
 
         </div>
       </nav>

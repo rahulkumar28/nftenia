@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Web3Modal from "web3modal"
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 import {
   nftaddress, nftmarketaddress
@@ -12,9 +13,12 @@ import {
 import NFT from '../artifacts/contracts/NFT.sol/NFT.json'
 import Market from '../artifacts/contracts/Market.sol/NFTMarket.json'
 
+export let nftToBuy;
+
 export default function Home() {
   const [nfts, setNfts] = useState([])
   const [loadingState, setLoadingState] = useState('not-loaded')
+  const router = useRouter()
   useEffect(() => {
     loadNFTs()
   }, [])
@@ -57,20 +61,8 @@ export default function Home() {
     setLoadingState('loaded')
   }
   async function buyNft(nft) {
-    /* needs the user to sign the transaction, so will use Web3Provider and sign it */
-    const web3Modal = new Web3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    const contract = new ethers.Contract(nftmarketaddress, Market.abi, signer)
-
-    /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')
-    const transaction = await contract.createMarketSale(nftaddress, nft.tokenId, {
-      value: price
-    })
-    await transaction.wait()
-    loadNFTs()
+    nftToBuy = nft;
+    router.push('/pricing')
   }
 
   if (loadingState === 'loaded' && !nfts.length) return (<h1 className="px-20 py-10 text-3xl">No items in Metaverse</h1>)
@@ -88,9 +80,9 @@ export default function Home() {
                 <img class="w-full popup" src={data.image} alt={data.alt}></img>
 
                 <div class="px-6 py-4 bg-slate-200">
-                  <div class="font-bold text-xl mb-2 hover:underline truncate">{data.title}</div>
+                  <div class="font-bold text-xl mb-2 hover:underline truncate">{data.name}</div>
                   <p class="text-gray-700 text-base hover:underline truncate">
-                    {data.desc}
+                    {data.description}
                   </p>
                 </div>
                 <div class="px-6 pt-4 pb-2 bg-white hover:underline truncate">
@@ -157,7 +149,7 @@ export default function Home() {
 
 
                       <div class="text-xxs text-amber-700 font-semibold ml-2
-                            group-hover:text-white delay-100" onClick={() => buyNft(nft)}>
+                            group-hover:text-white delay-100" onClick={() => buyNft(data)}>
                         Buy
 
                       </div>

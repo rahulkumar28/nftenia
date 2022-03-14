@@ -88,9 +88,9 @@ export default function Games() {
                                 <img class="w-full popup" src={data.image} alt={data.alt}></img>
 
                                 <div class="px-6 py-4 bg-slate-200">
-                                    <div class="font-bold text-xl mb-2 hover:underline truncate">{data.title}</div>
+                                    <div class="font-bold text-xl mb-2 hover:underline truncate">{data.name}</div>
                                     <p class="text-gray-700 text-base hover:underline truncate">
-                                        {data.desc}
+                                        {data.description}
                                     </p>
                                 </div>
                                 <div class="px-6 pt-4 pb-2 bg-white hover:underline truncate">
@@ -157,7 +157,7 @@ export default function Games() {
 
 
                                             <div class="text-xxs text-amber-700 font-semibold ml-2
-                            group-hover:text-white delay-100" onClick={() => buyNft(nft)}>
+                            group-hover:text-white delay-100" onClick={() => buyNft(data)}>
                                                 Buy
 
                                             </div>
